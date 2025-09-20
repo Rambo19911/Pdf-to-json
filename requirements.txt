@@ -1,0 +1,6 @@
+# PDF apstrādes bibliotēka
+PyMuPDF==1.24.1
+
+# Nodrošina robustu datu validāciju un iestatījumus
+pydantic==2.7.1
+customtkinter==5.2.2
