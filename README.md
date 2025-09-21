@@ -1,4 +1,3 @@
-# Pdf-to-json
 # **Juridisko PDF Dokumentu Apstrādes Sistēma (v3.0 ar GUI)**
 
 Šis projekts ir izveidots, lai automatizēti apstrādātu juridiskos dokumentus PDF formātā. Tā mērķis ir pārveidot nestrukturētu PDF saturu tīrā, granulārā un strukturētā JSON formātā, kas ir ideāli piemērots RAG (Retrieval-Augmented Generation) sistēmām. Versija 3.0 ievieš pilnvērtīgu grafisko lietotāja saskarni (GUI), kas padara programmas lietošanu ērtu un intuitīvu.
