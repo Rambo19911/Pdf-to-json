@@ -419,10 +419,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    else:
-        print("\n📋 Files kept as they are")
-        logger.info("User chose to keep files without reprocessing")
-
-if __name__ == "__main__":
-    main()
-
