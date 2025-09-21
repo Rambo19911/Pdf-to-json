@@ -6,6 +6,14 @@ import time
 from typing import List, Dict, Any, Optional, Tuple
 from queue import Queue
 import logging
+from alt_extractor import get_page_texts, extract_law_title_pdfplumber, texts_are_similar
+from config import path_config
+from legal_parser import (
+    ARTICLE_PATTERN,
+    POINT_PATTERN_PAREN,
+    POINT_SUBPOINT_PATTERN_DOT,
+    STOP_KEYWORDS,
+)
 
 def log_item(queue, text, tag):
     if queue:
@@ -51,6 +59,8 @@ def process_pdf_to_structured_data(pdf_path: str, log_queue: Optional[Queue] = N
     doc = None
     try:
         doc = fitz.open(pdf_path)
+        # Iegūstam tekstu ar pdfplumber, ja funkcija ieslēgta konfigurācijā
+        plumber_pages = get_page_texts(pdf_path) if path_config.use_pdfplumber_fallback else []
         structured_data = []
         law_title = "Nezinams_likums"
 
@@ -58,21 +68,28 @@ def process_pdf_to_structured_data(pdf_path: str, log_queue: Optional[Queue] = N
             title_candidate = extract_law_title(doc[0], log_queue)
             if title_candidate:
                 law_title = title_candidate
+            # Fallback: mēģinām atrast nosaukumu ar pdfplumber, ja PyMuPDF neatrada
+            if law_title == "Nezinams_likums":
+                alt_title = extract_law_title_pdfplumber(pdf_path)
+                if alt_title:
+                    law_title = alt_title
         
         log_item(log_queue, f"{law_title}\n", 'title')
         time.sleep(0.1)  # Reduced delay for better performance
 
         current_context = {"article": None, "point": None, "subpoint": None}
         
-        # Compiled regex patterns for better performance
-        article_pattern = re.compile(r"^\s*(\d{1,3}[.¹]?\s*pants\.)\s*(.*)", re.IGNORECASE)
-        point_pattern_paren = re.compile(r"^\s*\(([\d\w¹²³⁴⁵⁶⁷⁸⁹]+)\)\s*(.*)")
-        point_subpoint_pattern_dot = re.compile(r"^\s*(\d{1,2})\)\s*(.*)")
+        # Izmantojam centralizētos patternus no legal_parser
+        article_pattern = ARTICLE_PATTERN
+        point_pattern_paren = POINT_PATTERN_PAREN
+        point_subpoint_pattern_dot = POINT_SUBPOINT_PATTERN_DOT
         
-        stop_keywords = ["pārejas noteikumi", "informatīvā atsauce uz eiropas savienības direktīvām"]
+        stop_keywords = STOP_KEYWORDS
         stop_processing = False
 
         for i, page in enumerate(doc):
+            entries_before_page = len(structured_data)
+            page_has_entries = False
             if stop_processing: 
                 break
                 
@@ -168,7 +185,44 @@ def process_pdf_to_structured_data(pdf_path: str, log_queue: Optional[Queue] = N
                             if not new_entry["content"]: 
                                 new_entry["content"] = ""
                             structured_data.append(new_entry)
+                            page_has_entries = True
                             
+                # ------------------------------------------------------------
+                #  Fallback: ja šai lapai netika pievienoti ieraksti, izmanto pdfplumber tekstu
+                # ------------------------------------------------------------
+                if path_config.use_pdfplumber_fallback and not page_has_entries:
+                    plumber_text = plumber_pages[i] if i < len(plumber_pages) else ""
+                    for _line in plumber_text.split("\n"):
+                        _line = _line.strip()
+                        if not _line:
+                            continue
+                        alt_new_entry = None
+                        art_m = article_pattern.match(_line)
+                        if art_m:
+                            current_context = {"article": art_m.group(1).strip(), "point": None, "subpoint": None}
+                            _content = art_m.group(2).strip()
+                            alt_new_entry = {"law_title": law_title, "article": current_context["article"], "point": None, "subpoint": None, "content": _content}
+                        else:
+                            paren_m = point_pattern_paren.match(_line)
+                            if paren_m and current_context["article"]:
+                                current_context["point"] = paren_m.group(1).strip()
+                                _content = paren_m.group(2).strip()
+                                alt_new_entry = {"law_title": law_title, "article": current_context["article"], "point": current_context["point"], "subpoint": None, "content": _content}
+                            else:
+                                dot_m = point_subpoint_pattern_dot.match(_line)
+                                if dot_m and current_context["article"]:
+                                    _content = dot_m.group(2).strip()
+                                    if not current_context["point"]:
+                                        current_context["point"] = dot_m.group(1).strip()
+                                        alt_new_entry = {"law_title": law_title, "article": current_context["article"], "point": current_context["point"], "subpoint": None, "content": _content}
+                                    else:
+                                        current_context["subpoint"] = dot_m.group(1).strip()
+                                        alt_new_entry = {"law_title": law_title, "article": current_context["article"], "point": current_context["point"], "subpoint": current_context["subpoint"], "content": _content}
+                        if alt_new_entry:
+                            structured_data.append(alt_new_entry)
+                    # atjauninām page_has_entries, ja kaut kas pievienots
+                    if len(structured_data) > entries_before_page:
+                        page_has_entries = True
             except Exception as e:
                 log_item(log_queue, f"Kļūda apstrādājot {i+1}. lapu: {e}\n", 'error')
                 continue

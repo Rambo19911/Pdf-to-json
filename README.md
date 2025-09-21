@@ -1,11 +1,11 @@
-# **Juridisko PDF Dokumentu Apstrādes Sistēma (v3.0 ar GUI)**
+# **Juridisko PDF Dokumentu Apstrādes Sistēma (v3.1 ar GUI)**
 
 Šis projekts ir izveidots, lai automatizēti apstrādātu juridiskos dokumentus PDF formātā. Tā mērķis ir pārveidot nestrukturētu PDF saturu tīrā, granulārā un strukturētā JSON formātā, kas ir ideāli piemērots RAG (Retrieval-Augmented Generation) sistēmām. Versija 3.0 ievieš pilnvērtīgu grafisko lietotāja saskarni (GUI), kas padara programmas lietošanu ērtu un intuitīvu.
 
 
 ---
 
-## **Galvenās Iespējas (v3.0)**
+## **Galvenās Iespējas (v3.1)**
 
 * **Grafiskā Lietotāja Saskarne (GUI)**: Ērta un moderna programma, kas ļauj apstrādāt failus bez komandrindas.
 * **Reāllaika Procesa Vizualizācija**: Centrālajā logā iespējams detalizēti, soli pa solim, sekot līdzi dokumenta analīzes procesam, redzot, kā skripts atpazīst pantus, punktus un apakšpunktus.
@@ -14,6 +14,7 @@
 * **Viedā Faila Pārdēvēšana**: Gala JSON fails tiek nosaukts atbilstoši dokumentā atrastajam likuma nosaukumam (piem., `Darba_likums.json`).
 * **Automātiska Failu Pārvaldība**: Veiksmīgi apstrādātie PDF faili tiek automātiski pārvietoti uz `processed_pdfs` mapi, lai novērstu dubultu apstrādi.
 * **Robustums un Žurnalēšana**: Kļūdainie faili tiek pārvietoti uz `error_pdfs` mapi, un viss process tiek detalizēti reģistrēts `processing.log` failā.
+* **Dubultā PDF Ekstrakcija**: Integrēts `pdfplumber` fallback, lai uzlabotu teksta kvalitāti sarežģītos dokumentos. Ieslēdzams/izslēdzams ar checkboxu GUI apakšā vai `config.py` karodziņu `use_pdfplumber_fallback`. 
 
 ---
 
@@ -66,10 +67,12 @@ Projekts tagad ir paredzēts darbam ar grafisko saskarni.
     * Nospiediet pogu **"Izvēlēties PDF Failu"**, lai apstrādātu vienu dokumentu.
     * Nospiediet pogu **"Izvēlēties Mapi"**, lai automātiski apstrādātu visus PDF failus, kas atrodas izvēlētajā mapē.
 
-3.  **Sāciet apstrādi**:
+3.  **(Pēc vajadzības) Ieslēdziet "Pdfplumber Fallback" checkboxu** GUI apakšā, ja vēlaties izmantot dubulto ekstrakciju.
+
+4.  **Sāciet apstrādi**:
     * Nospiediet pogu **"Sākt Apstrādi"**.
 
-4.  **Vērojiet procesu**:
+5.  **Vērojiet procesu**:
     * Centrālajā logā tiks attēlota detalizēta informācija par katru apstrādes soli.
     * Progresa josla rādīs kopējo progresu, balstoties uz apstrādājamo lapu skaitu.
     * Pēc apstrādes pabeigšanas rezultātu logu varēs brīvi ritināt un pārskatīt.

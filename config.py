@@ -16,6 +16,8 @@ class PathConfig:
         self.max_file_size_mb = 100  # Maximum PDF file size in MB
         self.processing_timeout = 300  # Timeout in seconds
         self.content_similarity_threshold = 0.95  # For verification
+        # Feature flags
+        self.use_pdfplumber_fallback: bool = True  # Enable dual extraction
         self.max_concurrent_files = 3  # Maximum files to process simultaneously
 
     def setup_directories(self):

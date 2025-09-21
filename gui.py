@@ -69,6 +69,7 @@ class App(ctk.CTk):
         self.frame_bottom = ctk.CTkFrame(self)
         self.frame_bottom.grid(row=3, column=0, padx=20, pady=(10, 20), sticky="ew")
         self.frame_bottom.grid_columnconfigure(0, weight=1)
+        self.frame_bottom.grid_columnconfigure(1, weight=0)
 
         self.button_start = ctk.CTkButton(
             self.frame_bottom, 
@@ -78,6 +79,17 @@ class App(ctk.CTk):
             height=40
         )
         self.button_start.grid(row=0, column=0, padx=20, pady=10, sticky="ew")
+        # Checkbox for pdfplumber fallback
+        self.var_plumber = ctk.BooleanVar(value=path_config.use_pdfplumber_fallback)
+        self.checkbox_plumber = ctk.CTkCheckBox(
+            self.frame_bottom,
+            text="Pdfplumber Fallback",
+            variable=self.var_plumber,
+            onvalue=True,
+            offvalue=False,
+            command=self.toggle_plumber,
+        )
+        self.checkbox_plumber.grid(row=0, column=1, padx=(0, 20), pady=10)
 
         # Progress frame
         self.frame_progress = ctk.CTkFrame(self.frame_bottom)
@@ -195,6 +207,10 @@ Izvēlieties failus, lai sāktu...
                 
         except Exception as e:
             messagebox.showerror("Kļūda", f"Kļūda mapes izvēlē: {e}")
+
+    def toggle_plumber(self):
+        """Toggle pdfplumber fallback feature flag"""
+        path_config.use_pdfplumber_fallback = self.var_plumber.get()
 
     def update_status(self, message: str, is_error: bool = False):
         """Update status label."""
