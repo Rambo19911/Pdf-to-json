@@ -1,26 +1,19 @@
 # **Juridisko PDF Dokumentu Apstrādes Sistēma (v3.0 ar GUI)**
 
-Šis projekts ir izveidots, lai automatizēti apstrādātu juridiskos dokumentus PDF formātā. Tā mērķis ir pārveidot nestrukturētu PDF saturu tīrā, granulārā un strukturētā JSON formātā, kas ir optimizēts tālākai izmantošanai, piemēram, RAG (Retrieval-Augmented Generation) sistēmu indeksēšanai.
+Šis projekts ir izveidots, lai automatizēti apstrādātu juridiskos dokumentus PDF formātā. Tā mērķis ir pārveidot nestrukturētu PDF saturu tīrā, granulārā un strukturētā JSON formātā, kas ir ideāli piemērots RAG (Retrieval-Augmented Generation) sistēmām. Versija 3.0 ievieš pilnvērtīgu grafisko lietotāja saskarni (GUI), kas padara programmas lietošanu ērtu un intuitīvu.
+
 
 ---
 
 ## **Galvenās Iespējas (v3.0)**
 
-*   **Grafiskā Lietotāja Saskarne (GUI)**: Ērta un moderna programma, kas ļauj apstrādāt failus bez komandrindas.
-*   **Reāllaika Procesa Vizualizācija**: Centrālajā logā iespējams detalizēti, soli pa solim, sekot līdzi dokumenta analīzes procesam, redzot, kā skripts atpazīst pantus, punktus un apakšpunktus.
-*   **Elastīga Failu Atlase**: Iespēja izvēlēties apstrādei gan atsevišķu PDF failu, gan veselu mapi ar vairākiem dokumentiem.
-*   **Granulāra Datu Sadalīšana**: Sistēma sadala likumus pantos, punktos un apakšpunktos, nodrošinot maksimālu precizitāti.
-*   **Viedā Faila Pārdēvēšana**: Gala JSON fails tiek nosaukts atbilstoši dokumentā atrastajam likuma nosaukumam (piem., `Darba_likums.json`).
-*   **Automātiska Failu Pārvaldība**: Veiksmīgi apstrādātie PDF faili tiek automātiski pārvietoti uz `processed_pdfs` mapi, lai novērstu dubultu apstrādi.
-*   **Robustums un Žurnalēšana**: Kļūdainie faili tiek pārvietoti uz `error_pdfs` mapi, un viss process tiek detalizēti reģistrēts `processing.log` failā.
-
----
-
-## **Paredzētais Dokumentu Tips**
-
-Šī sistēma ir īpaši izstrādāta, lai apstrādātu **Latvijas Republikas normatīvos aktus** (likumus, Ministru kabineta noteikumus u.c.), kuriem ir skaidri definēta hierarhiska struktūra: panti, punkti un apakšpunkti.
-
-Lai demonstrētu programmas spējas un nodrošinātu paraugu, repozitorijā ir iekļauts **Darba likums** PDF formātā. Šis dokuments kalpo kā etalons tam, kāda veida failus sistēma spēj visefektīvāk analizēt un pārveidot strukturētā JSON formātā.
+* **Grafiskā Lietotāja Saskarne (GUI)**: Ērta un moderna programma, kas ļauj apstrādāt failus bez komandrindas.
+* **Reāllaika Procesa Vizualizācija**: Centrālajā logā iespējams detalizēti, soli pa solim, sekot līdzi dokumenta analīzes procesam, redzot, kā skripts atpazīst pantus, punktus un apakšpunktus.
+* **Elastīga Failu Atlase**: Iespēja izvēlēties apstrādei gan atsevišķu PDF failu, gan veselu mapi ar vairākiem dokumentiem.
+* **Granulāra Datu Sadalīšana**: Sistēma sadala likumus pantos, punktos un apakšpunktos, nodrošinot maksimālu precizitāti.
+* **Viedā Faila Pārdēvēšana**: Gala JSON fails tiek nosaukts atbilstoši dokumentā atrastajam likuma nosaukumam (piem., `Darba_likums.json`).
+* **Automātiska Failu Pārvaldība**: Veiksmīgi apstrādātie PDF faili tiek automātiski pārvietoti uz `processed_pdfs` mapi, lai novērstu dubultu apstrādi.
+* **Robustums un Žurnalēšana**: Kļūdainie faili tiek pārvietoti uz `error_pdfs` mapi, un viss process tiek detalizēti reģistrēts `processing.log` failā.
 
 ---
 
@@ -32,7 +25,6 @@ Lai demonstrētu programmas spējas un nodrošinātu paraugu, repozitorijā ir i
 ├── processed_pdfs/       # Šeit nonāk veiksmīgi apstrādātie PDF oriģināli
 ├── processed_json/       # Šeit tiek saglabāti veiksmīgi apstrādātie JSON faili
 ├── error_pdfs/           # Šeit tiek pārvietoti PDF, kuru apstrāde neizdevās
-├── Darba_likums.pdf      # PARUGS: Dokumenta piemērs, kādam paredzēta sistēma
 ├── gui.py                # ✅ Galvenais skripts programmas palaišanai ar UI
 ├── main.py               # Apstrādes loģikas vadības skripts
 ├── pdf_processor.py      # Modulis PDF datu ekstrakcijai un analīzei
@@ -71,13 +63,13 @@ Projekts tagad ir paredzēts darbam ar grafisko saskarni.
     ```
 
 2.  **Izvēlieties failus**:
-    *   Nospiediet pogu **"Izvēlēties PDF Failu"**, lai apstrādātu vienu dokumentu.
-    *   Nospiediet pogu **"Izvēlēties Mapi"**, lai automātiski apstrādātu visus PDF failus, kas atrodas izvēlētajā mapē.
+    * Nospiediet pogu **"Izvēlēties PDF Failu"**, lai apstrādātu vienu dokumentu.
+    * Nospiediet pogu **"Izvēlēties Mapi"**, lai automātiski apstrādātu visus PDF failus, kas atrodas izvēlētajā mapē.
 
 3.  **Sāciet apstrādi**:
-    *   Nospiediet pogu **"Sākt Apstrādi"**.
+    * Nospiediet pogu **"Sākt Apstrādi"**.
 
 4.  **Vērojiet procesu**:
-    *   Centrālajā logā tiks attēlota detalizēta informācija par katru apstrādes soli.
-    *   Progresa josla rādīs kopējo progresu, balstoties uz apstrādājamo lapu skaitu.
-    *   Pēc apstrādes pabeigšanas rezultātu logu varēs brīvi ritināt un pārskatīt.
+    * Centrālajā logā tiks attēlota detalizēta informācija par katru apstrādes soli.
+    * Progresa josla rādīs kopējo progresu, balstoties uz apstrādājamo lapu skaitu.
+    * Pēc apstrādes pabeigšanas rezultātu logu varēs brīvi ritināt un pārskatīt.
